@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canada's Overdose Crisis: What the Data Reveals</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<style>
+/* ===== BASE RESET & TYPOGRAPHY ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+  color: #0A0A0A;
+  background: #FFFFFF;
+  line-height: 1.65;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+h1, h2, h3 { font-weight: 700; color: #0B1F33; }
+h1 { font-size: 2.2rem; line-height: 1.2; }
+h2 { font-size: 1.5rem; margin-bottom: 8px; }
+h3 { font-size: 1.1rem; }
+p { margin-bottom: 12px; }
+a { color: #0E8C86; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.text-secondary { color: #4A5568; }
+.text-light { font-weight: 300; color: #4A5568; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+
+/* ===== LAYOUT SHELL ===== */
+.article-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+.section {
+  margin-bottom: 48px;
+  padding-top: 32px;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #0FB9B1;
+  margin-bottom: 6px;
+}
+
+/* ===== GRADIENT HERO HEADER ===== */
+.hero-header {
+  background: linear-gradient(135deg, #0B1F33 0%, #102A43 40%, #1E3A5F 70%, #0E8C86 100%);
+  padding: 64px 20px 48px;
+  text-align: center;
+  color: #FFFFFF;
+  margin-bottom: 40px;
+}
+.hero-header h1 { color: #FFFFFF; font-size: 2.4rem; margin-bottom: 12px; }
+.hero-header .subtitle { font-weight: 300; font-size: 1.1rem; color: #7EDDD5; margin-bottom: 24px; }
+.hero-header .byline { font-size: 12px; font-weight: 300; color: #4FD1C5; }
+
+/* ===== SL-NUM-HERO ===== */
+.sl-num-hero {
+  text-align: center;
+  padding: 32px 0;
+}
+.sl-num-hero .hero-value {
+  font-size: 48px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+.sl-num-hero .hero-label {
+  font-size: 16px;
+  font-weight: 400;
+  color: #4A5568;
+  margin-top: 8px;
+}
+.sl-num-hero .hero-context {
+  font-size: 13px;
+  font-weight: 300;
+  color: #4A5568;
+  margin-top: 4px;
+}
+
+/* ===== SL-NUM-ROW ===== */
+.sl-num-row {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.sl-num-row .num-item {
+  text-align: center;
+  padding: 12px 28px;
+  border-right: 1px solid #E5E7EB;
+}
+.sl-num-row .num-item:last-child { border-right: none; }
+.sl-num-row .num-value {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sl-num-row .num-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: #4A5568;
+}
+
+/* ===== SL-NUM-COMPARISON ===== */
+.sl-num-comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 20px 0;
+  padding: 24px;
+  background: #F9FAFB;
+  border-radius: 8px;
+}
+.sl-num-comparison .comp-side {
+  text-align: center;
+}
+.sl-num-comparison .comp-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0B1F33;
+}
+.sl-num-comparison .comp-label {
+  font-size: 12px;
+  color: #4A5568;
+  font-weight: 400;
+}
+.sl-num-comparison .comp-vs {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ===== SL-NUM-TREND ===== */
+.sl-num-trend {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(11,31,51,0.04), 0 1px 2px rgba(11,31,51,0.06);
+}
+.sl-num-trend .trend-value {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sl-num-trend .trend-label { font-size: 12px; color: #4A5568; }
+
+/* ===== CHART CARD ===== */
+.chart-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(11,31,51,0.04), 0 1px 2px rgba(11,31,51,0.06);
+  margin: 16px 0;
+}
+.chart-card .chart-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0B1F33;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chart-card .chart-title .material-symbols-outlined {
+  font-size: 20px;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.chart-card .chart-subtitle {
+  font-size: 12px;
+  font-weight: 300;
+  color: #4A5568;
+  margin-bottom: 16px;
+}
+.chart-card canvas { max-height: 260px; }
+
+/* ===== STORY PANEL ===== */
+.story-panel {
+  border-left: 3px solid #0FB9B1;
+  border-radius: 0 8px 8px 0;
+  padding: 14px 20px;
+  margin: 12px 0;
+  font-size: 13px;
+  font-weight: 300;
+  color: #4A5568;
+  background: linear-gradient(135deg, rgba(15,185,177,0.03), rgba(11,31,51,0.02));
+}
+.story-panel .hl { color: #0FB9B1; font-weight: 700; }
+
+/* ===== CALLOUT (MAX 2) ===== */
+.callout {
+  border-left: 4px solid #0FB9B1;
+  border-radius: 0 8px 8px 0;
+  background: linear-gradient(135deg, rgba(15,185,177,0.04), rgba(11,31,51,0.03));
+  padding: 20px 24px;
+  margin: 20px 0;
+}
+.callout .callout-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0B1F33;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.callout .callout-title .material-symbols-outlined {
+  font-size: 18px;
+  color: #0FB9B1;
+}
+.callout .callout-body {
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #4A5568;
+}
+
+/* ===== SL-SEQ-CHEVRON ===== */
+.sl-seq-chevron {
+  display: flex;
+  gap: 4px;
+  margin: 20px 0;
+}
+.sl-seq-chevron .chevron {
+  flex: 1;
+  padding: 16px 20px 16px 32px;
+  background: linear-gradient(135deg, #1E3A5F, #0E8C86);
+  color: #FFF;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 16px 50%);
+  text-align: center;
+}
+.sl-seq-chevron .chevron:first-child {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%);
+  padding-left: 20px;
+}
+.sl-seq-chevron .chevron:last-child {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 16px 50%);
+}
+.sl-seq-chevron .chevron .chev-value { font-size: 20px; font-weight: 700; }
+.sl-seq-chevron .chevron .chev-label { font-size: 11px; font-weight: 300; }
+
+/* ===== SL-COLUMNS ===== */
+.sl-columns-2equal { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+.sl-columns-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin: 20px 0; align-items: start; }
+
+/* ===== SL-BOXES-ICON ===== */
+.sl-boxes-icon {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+.sl-boxes-icon .box-item {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(11,31,51,0.04), 0 1px 2px rgba(11,31,51,0.06);
+}
+.sl-boxes-icon .box-icon {
+  font-size: 28px;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+.sl-boxes-icon .box-value { font-size: 24px; font-weight: 700; color: #0B1F33; }
+.sl-boxes-icon .box-label { font-size: 12px; color: #4A5568; }
+.sl-boxes-icon .box-desc { font-size: 12px; font-weight: 300; color: #4A5568; margin-top: 4px; }
+
+/* ===== SL-QUOTE-CENTER ===== */
+.sl-quote-center {
+  text-align: center;
+  padding: 32px 40px;
+  margin: 20px 0;
+}
+.sl-quote-center::before {
+  content: '\201C';
+  display: block;
+  font-size: 54px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(135deg, #0B1F33, #0FB9B1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sl-quote-center .quote-text {
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 300;
+  color: #0B1F33;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.sl-quote-center .quote-attr {
+  font-size: 12px;
+  color: #4A5568;
+  margin-top: 12px;
+}
+
+/* ===== SL-BULLETS ===== */
+.sl-bullets-icon { list-style: none; }
+.sl-bullets-icon li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #E5E7EB;
+}
+.sl-bullets-icon li:last-child { border-bottom: none; }
+.sl-bullets-icon .bullet-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #E0F0EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sl-bullets-icon .bullet-icon .material-symbols-outlined {
+  font-size: 18px;
+  color: #0FB9B1;
+}
+.sl-bullets-description { list-style: none; }
+.sl-bullets-description li { padding: 10px 0; border-bottom: 1px solid #E5E7EB; }
+.sl-bullets-description li:last-child { border-bottom: none; }
+.sl-bullets-description .bd-title { font-weight: 700; color: #0B1F33; font-size: 14px; }
+.sl-bullets-description .bd-desc { font-weight: 300; color: #4A5568; font-size: 13px; margin-top: 2px; }
+
+/* ===== DATA TABLE ===== */
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 16px 0; }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.data-table thead th {
+  background: #1E3A5F;
+  color: #FFF;
+  font-weight: 700;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 12px;
+}
+.data-table thead th:first-child { border-radius: 8px 0 0 0; }
+.data-table thead th:last-child { border-radius: 0 8px 0 0; }
+.data-table tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #E5E7EB;
+}
+.data-table tbody tr:hover { background: #F9FAFB; }
+.data-table .val { font-weight: 700; color: #0B1F33; }
+
+/* ===== FOOTNOTES & REFERENCES ===== */
+.footnote {
+  font-size: 11px;
+  font-weight: 300;
+  color: #4A5568;
+  border-top: 1px solid #E5E7EB;
+  padding-top: 8px;
+  margin-top: 12px;
+}
+.ref-section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 2px solid #E5E7EB;
+}
+.ref-section h2 { font-size: 1.2rem; margin-bottom: 16px; }
+.ref-list { list-style: none; }
+.ref-list li {
+  font-size: 13px;
+  font-weight: 300;
+  color: #4A5568;
+  margin-bottom: 10px;
+  padding-left: 28px;
+  text-indent: -28px;
+}
+.ref-list li em { font-style: italic; }
+
+/* ===== METHODOLOGY BOX ===== */
+.methods-box {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.methods-box h3 { font-size: 14px; margin-bottom: 12px; }
+.methods-box p, .methods-box li { font-size: 13px; font-weight: 300; color: #4A5568; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .hero-header { padding: 40px 16px 32px; }
+  .hero-header h1 { font-size: 1.8rem; }
+  .sl-num-hero .hero-value { font-size: 36px; }
+  .sl-num-row { flex-direction: column; gap: 12px; }
+  .sl-num-row .num-item { border-right: none; border-bottom: 1px solid #E5E7EB; padding: 8px 0; }
+  .sl-num-row .num-item:last-child { border-bottom: none; }
+  .sl-num-comparison { grid-template-columns: 1fr; gap: 12px; }
+  .sl-num-comparison .comp-vs { margin: 0 auto; }
+  .sl-columns-2equal, .sl-columns-2-1 { grid-template-columns: 1fr; }
+  .sl-boxes-icon { grid-template-columns: 1fr; }
+  .sl-seq-chevron { flex-direction: column; }
+  .sl-seq-chevron .chevron { clip-path: none !important; padding: 12px 16px; border-radius: 6px; }
+  .chart-card canvas { max-height: 200px; }
+  .sl-quote-center { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO HEADER ===== -->
+<header class="hero-header">
+  <h1>Canada's Overdose Crisis: What the Data Reveals</h1>
+  <div class="subtitle">A data-driven analysis of opioid and stimulant-related harms across provinces, 2016&ndash;2025</div>
+  <div class="byline">Data sources: Public Health Agency of Canada &bull; Canadian Institute for Health Information &bull; March 2026</div>
+</header>
+
+<div class="article-wrap">
+
+<!-- ===== SECTION 1: THE SCALE OF LOSS ===== -->
+<section class="section" id="s1">
+  <div class="section-label">The Scale of Loss</div>
+  <div class="sl-num-hero">
+    <div class="hero-value">50,521</div>
+    <div class="hero-label">Canadians lost to opioid-related overdose, 2016&ndash;2024</div>
+    <div class="hero-context">An average of 15 people per day for nine consecutive years</div>
+  </div>
+  <div class="sl-num-row">
+    <div class="num-item">
+      <div class="num-value">182%</div>
+      <div class="num-label">Increase in annual deaths, 2016 to 2023</div>
+    </div>
+    <div class="num-item">
+      <div class="num-value">7,997</div>
+      <div class="num-label">Peak annual deaths (2023)</div>
+    </div>
+    <div class="num-item">
+      <div class="num-value">20.0</div>
+      <div class="num-label">Deaths per 100,000 population (2023)</div>
+    </div>
+  </div>
+  <p>Between 2016 and 2024, more than fifty thousand people in Canada died from opioid-related causes. The primary driver of this escalation is the contamination of the unregulated drug supply with illicitly manufactured fentanyl and its analogues&mdash;a supply-side crisis in which people who use drugs are exposed to substances of unpredictable potency, with no quality control and no margin for error (PHAC, 2025). These deaths are not evenly distributed: they cluster by province, by age, by sex, and by socioeconomic circumstance. This article examines the patterns in the data, the parallel trends in health system spending, and what the numbers can and cannot tell us about a crisis that continues to reshape communities across the country.</p>
+  <p class="text-sm text-secondary"><em>Methodological note:</em> Percentage changes in this article (e.g., the 182% increase from 2016 to 2023) are sensitive to the choice of baseline year. Canada's national overdose surveillance was in its early stages in 2016, and some provinces may have underreported in the first year. Using 2017 as the baseline would yield a 104% increase. All rates presented here are crude rates (not age-standardized), which may overstate differences between provinces with different age structures. See <a href="#s11">Methods &amp; Limitations</a> for full discussion.</p>
+</section>
+
+<!-- ===== SECTION 2: THE TRAJECTORY ===== -->
+<section class="section" id="s2">
+  <div class="section-label">The Trajectory</div>
+  <h2>National Opioid Deaths, 2016&ndash;2025</h2>
+  <div class="sl-num-row">
+    <div class="num-item">
+      <div class="num-value">2,832</div>
+      <div class="num-label">Deaths in 2016</div>
+    </div>
+    <div class="num-item">
+      <div class="num-value">7,997</div>
+      <div class="num-label">Deaths in 2023 (peak)</div>
+    </div>
+    <div class="num-item">
+      <div class="num-value">7,289</div>
+      <div class="num-label">Deaths in 2024</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">show_chart</span>
+      Opioid-Related Deaths in Canada
+    </div>
+    <div class="chart-subtitle">Total deaths and crude rate per 100,000 population, by year &bull; Source: PHAC (2025)</div>
+    <canvas id="chartTrajectory" height="260"></canvas>
+  </div>
+  <div class="story-panel">
+    The trajectory reveals two distinct phases. From 2016 to 2019, deaths fluctuated between approximately 2,800 and 4,200 per year. The onset of the COVID-19 pandemic in 2020 coincided with a <span class="hl">sharp escalation to 6,061 deaths</span>&mdash;a 71% increase from 2019. Public health measures, disrupted treatment access, isolation, and an increasingly toxic unregulated drug supply are all cited as contributing factors (PHAC, 2025). Deaths continued to climb to a peak of <span class="hl">7,997 in 2023</span> before declining modestly to 7,289 in 2024. Preliminary 2025 data (January through June) shows 2,787 deaths, suggesting a potential continued decline, though reporting lags mean this figure will likely be revised upward.
+  </div>
+  <div class="footnote">Note: 2025 data covers January to June only. Figures are subject to revision as provincial coroner and medical examiner reports are finalized (PHAC, 2025).</div>
+</section>
+
+<!-- ===== SECTION 3: THE FENTANYL FACTOR ===== -->
+<section class="section" id="s3">
+  <div class="section-label">The Fentanyl Factor</div>
+  <h2>How Fentanyl Transformed the Crisis</h2>
+  <div class="sl-num-comparison">
+    <div class="comp-side">
+      <div class="comp-value">52%</div>
+      <div class="comp-label">Deaths involving fentanyl (2016)</div>
+    </div>
+    <div class="comp-vs">VS</div>
+    <div class="comp-side">
+      <div class="comp-value">86%</div>
+      <div class="comp-label">Deaths involving fentanyl (2021 peak)</div>
+    </div>
+  </div>
+  <p class="text-secondary text-sm" style="text-align:center; margin-bottom:16px;">The proportion of opioid deaths involving fentanyl or fentanyl analogues nearly doubled between 2016 and 2021, fundamentally changing the nature of the crisis (PHAC, 2025).</p>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">stacked_bar_chart</span>
+      Fentanyl vs. Non-Fentanyl Involvement in Opioid Deaths
+    </div>
+    <div class="chart-subtitle">Percentage of opioid-related deaths by substance involvement, Canada &bull; Categories overlap: a single death may involve both &bull; Source: PHAC (2025)</div>
+    <canvas id="chartFentanyl" height="260"></canvas>
+  </div>
+  <div class="story-panel">
+    The shift from pharmaceutical opioids to illicitly manufactured fentanyl represents the most significant transformation in Canada's overdose crisis. In 2016, fentanyl was involved in roughly half of opioid deaths. By 2021, that proportion had risen to <span class="hl">86%</span>. The 2024 and preliminary 2025 data show a modest decline in fentanyl involvement (74% and 57%, respectively), though this may reflect changes in classification or reporting rather than a genuine shift in the drug supply. Critically, the "non-fentanyl opioid" category can exceed 100% when combined with fentanyl figures because deaths may involve multiple substances simultaneously.
+  </div>
+  <div class="footnote">Note: Percentages represent the proportion of opioid deaths in which each substance type was detected. Categories are not mutually exclusive; a single death may involve both fentanyl and non-fentanyl opioids. Totals may exceed 100% (PHAC, 2025).</div>
+</section>
+
+<!-- ===== SECTION 4: WHO IS DYING ===== -->
+<section class="section" id="s4">
+  <div class="section-label">Who Is Dying</div>
+  <h2>Demographic Profile of Opioid Deaths, 2023</h2>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">bar_chart</span>
+      Opioid Deaths by Age Group and Sex
+    </div>
+    <div class="chart-subtitle">Canada, 2023 &bull; Source: PHAC (2025)</div>
+    <canvas id="chartDemographic" height="280"></canvas>
+  </div>
+  <div class="sl-boxes-icon">
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">person</span></div>
+      <div class="box-value">77%</div>
+      <div class="box-label">Male</div>
+      <div class="box-desc">5,684 of 7,935 deaths with sex data in 2023</div>
+    </div>
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">calendar_month</span></div>
+      <div class="box-value">30&ndash;49</div>
+      <div class="box-label">Peak age range</div>
+      <div class="box-desc">Males 30&ndash;39 account for the single largest group (1,613 deaths)</div>
+    </div>
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">trending_up</span></div>
+      <div class="box-value">96%</div>
+      <div class="box-label">Accidental</div>
+      <div class="box-desc">Classified as accidental manner of death in 2023</div>
+    </div>
+  </div>
+  <div class="story-panel">
+    The demographic concentration of opioid deaths is striking. Men account for more than three-quarters of all deaths, with the <span class="hl">30&ndash;39 age group</span> bearing the heaviest burden (1,613 male deaths in 2023 alone). Women in the same age range experienced 674 deaths. The data also reveal that <span class="hl">96% of opioid deaths in 2023 were classified as accidental</span>, with only 2% attributed to suicide and 1% to undetermined causes (PHAC, 2025). This classification is significant: it suggests that the vast majority of people who died did not intend to do so, pointing to a crisis of an increasingly toxic, unpredictable drug supply rather than one of intentional self-harm.
+  </div>
+  <div class="story-panel" style="border-left-color: #1E3A5F;">
+    <strong>Critical data gap: Indigenous communities.</strong> The national PHAC surveillance data used in this analysis does not include Indigenous-specific breakdowns. However, provincial data reveal severe disparities. In British Columbia, First Nations people die from illicit drug toxicity at <span class="hl">5&ndash;6 times the rate</span> of non-Indigenous people (British Columbia Coroners Service &amp; First Nations Health Authority, 2024). These disparities are rooted in structural determinants including intergenerational trauma, the legacy of residential schools, inadequate on-reserve health services, and the intersection of housing instability with substance use. The absence of this data from national reporting should not be mistaken for the absence of the disparity. Additionally, socioeconomic factors&mdash;housing status, income, and recent incarceration&mdash;are strong predictors of overdose death risk but are not captured in this dataset. BC Coroners Service data consistently shows that the majority of overdose deaths occur in private residences, not in public spaces.
+  </div>
+</section>
+
+<!-- ===== SECTION 5: THE PROVINCIAL DIVIDE ===== -->
+<section class="section" id="s5">
+  <div class="section-label">The Provincial Divide</div>
+  <h2>Geographic Disparity in Opioid Death Rates</h2>
+  <div class="sl-num-comparison">
+    <div class="comp-side">
+      <div class="comp-value" style="color:#1E3A5F;">40.2</div>
+      <div class="comp-label">British Columbia<br>deaths per 100K (2023)</div>
+    </div>
+    <div class="comp-vs">VS</div>
+    <div class="comp-side">
+      <div class="comp-value" style="color:#0FB9B1;">3.5</div>
+      <div class="comp-label">Quebec<br>deaths per 100K (2023)</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">map</span>
+      Opioid Death Rates by Province
+    </div>
+    <div class="chart-subtitle">Crude rate per 100,000 population, selected provinces, 2016&ndash;2024 &bull; Source: PHAC (2025)</div>
+    <canvas id="chartProvincial" height="280"></canvas>
+  </div>
+  <div class="story-panel">
+    The provincial variation in opioid death rates is among the most striking features of the data. In 2023, British Columbia's crude rate of <span class="hl">40.2 per 100,000</span> was more than 11 times Quebec's crude rate of <span class="hl">3.5 per 100,000</span>. Alberta closely followed BC at 39.8. Saskatchewan (28.8) and Manitoba (26.3) occupy an intermediate position, while Ontario (16.9) sits near the national average. These disparities reflect differences in drug supply composition, treatment infrastructure, harm reduction availability, and socioeconomic conditions&mdash;not simply differences in drug use prevalence (Canadian Centre on Substance Use and Addiction [CCSA], 2023). <strong>Important caveat:</strong> These are crude rates, not age-standardized. Because opioid deaths concentrate in the 20&ndash;49 age group, provinces with younger populations (e.g., Alberta, Saskatchewan) may appear to have higher rates partly due to demography rather than differential risk exposure alone. Age-standardized rates, where available, should be preferred for interprovincial comparison.
+  </div>
+</section>
+
+<!-- ===== SECTION 6: BEYOND DEATH ===== -->
+<section class="section" id="s6">
+  <div class="section-label">Beyond Death</div>
+  <h2>Health System Strain: The Broader Burden</h2>
+  <div class="sl-seq-chevron">
+    <div class="chevron">
+      <div class="chev-value">ED Visits</div>
+      <div class="chev-label">Emergency departments</div>
+    </div>
+    <div class="chevron" style="background: linear-gradient(135deg, #0E8C86, #0FB9B1);">
+      <div class="chev-value">Hospitalizations</div>
+      <div class="chev-label">Inpatient admissions</div>
+    </div>
+    <div class="chevron" style="background: linear-gradient(135deg, #0FB9B1, #4FD1C5);">
+      <div class="chev-value">EMS</div>
+      <div class="chev-label">Paramedic responses</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">local_hospital</span>
+      Opioid-Related Deaths: The Visible Fraction
+    </div>
+    <div class="chart-subtitle">Deaths represent only a fraction of total opioid-related health system encounters &bull; Source: PHAC (2025)</div>
+    <canvas id="chartSystem" height="260"></canvas>
+  </div>
+  <div class="story-panel">
+    Deaths represent only the most severe outcome of the overdose crisis. Emergency department visits, hospitalizations, and emergency medical services responses all reflect the broader burden on Canada's health system. Each death recorded in the PHAC surveillance data represents a fraction of the non-fatal overdoses, treatment encounters, and emergency interventions that place cumulative strain on an already pressured system (Canadian Institute for Health Information [CIHI], 2024).
+  </div>
+</section>
+
+<!-- ===== SECTION 7: QUEBEC CALLOUT ===== -->
+<section class="section" id="s7">
+  <div class="section-label">Provincial Spotlight</div>
+  <h2>Quebec's Relative Protection</h2>
+  <div class="callout">
+    <div class="callout-title">
+      <span class="material-symbols-outlined">shield</span>
+      Quebec's opioid death rate is consistently 3&ndash;11 times lower than western provinces
+    </div>
+    <div class="callout-body">
+      <p>Quebec's remarkably lower opioid death rate warrants careful interpretation. Several factors may contribute, though no single explanation is sufficient:</p>
+    </div>
+  </div>
+  <ul class="sl-bullets-icon">
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">medication</span></div>
+      <div><strong>Opioid agonist treatment access.</strong> Quebec has one of Canada's most mature methadone and buprenorphine programs, with high prescribing rates relative to population (Institut national de sant&eacute; publique du Qu&eacute;bec [INSPQ], 2023).</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">science</span></div>
+      <div><strong>Drug supply composition.</strong> The unregulated drug supply in Quebec has historically contained less fentanyl than in British Columbia or Alberta, though this may be changing (CCSA, 2023).</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">gavel</span></div>
+      <div><strong>Classification differences.</strong> Provincial coroner practices and death classification criteria vary, which may partially account for rate differences. Quebec uses a medical examiner system with specific toxicological thresholds (PHAC, 2025).</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">warning</span></div>
+      <div><strong>Caution on interpretation.</strong> A lower death rate does not mean Quebec is unaffected. Quebec's stimulant-related harms have been rising, and the province experienced a <span class="hl" style="color:#1E3A5F; font-weight:700;">109% increase in opioid deaths in 2024 (645, up from 308 in 2023)</span>&mdash;a signal that whatever factors previously limited the crisis may be eroding.</div>
+    </li>
+  </ul>
+</section>
+
+<!-- ===== SECTION 8: THE STIMULANT SHADOW ===== -->
+<section class="section" id="s8">
+  <div class="section-label">The Stimulant Shadow</div>
+  <h2>A Parallel Crisis</h2>
+  <div class="sl-columns-2-1">
+    <div>
+      <div class="chart-card">
+        <div class="chart-title">
+          <span class="material-symbols-outlined">timeline</span>
+          Stimulant-Related Deaths
+        </div>
+        <div class="chart-subtitle">Canada, 2018&ndash;2025 &bull; Source: PHAC (2025)</div>
+        <canvas id="chartStimulant" height="240"></canvas>
+      </div>
+    </div>
+    <div>
+      <div class="sl-num-trend">
+        <div class="trend-value">5,326</div>
+        <div class="trend-label">Stimulant deaths in 2023 (peak)</div>
+        <svg width="100%" height="28" viewBox="0 0 200 28" style="margin-top:8px;">
+          <polyline points="10,24 40,22 70,12 100,6 130,5 160,2 180,4" fill="none" stroke="#0FB9B1" stroke-width="2"/>
+        </svg>
+      </div>
+      <div style="margin-top:12px;">
+        <div class="sl-num-trend">
+          <div class="trend-value">126%</div>
+          <div class="trend-label">Increase since 2018</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="story-panel">
+    Stimulant-related deaths&mdash;primarily involving cocaine and methamphetamine&mdash;have followed a trajectory parallel to opioid deaths, rising from <span class="hl">2,357 in 2018 to 5,326 in 2023</span>. Many of these deaths involve both stimulants and opioids simultaneously, reflecting the reality of polysubstance use in Canada's unregulated drug supply. The stimulant data underscores that the overdose crisis cannot be understood through an opioid-only lens (PHAC, 2025).
+  </div>
+</section>
+
+<!-- ===== SECTION 9: MENTAL HEALTH SPENDING ===== -->
+<section class="section" id="s9">
+  <div class="section-label">Mental Health Spending vs. Crisis</div>
+  <h2>Psychiatrist Payments and Overdose Deaths</h2>
+  <div class="sl-num-comparison">
+    <div class="comp-side">
+      <div class="comp-value">+8%</div>
+      <div class="comp-label">Opioid deaths<br>2021 &rarr; 2023</div>
+    </div>
+    <div class="comp-vs">VS</div>
+    <div class="comp-side">
+      <div class="comp-value">+8%</div>
+      <div class="comp-label">Psychiatry payments<br>2021 &rarr; 2023</div>
+    </div>
+  </div>
+  <p class="text-sm text-secondary" style="text-align:center; margin-bottom: 16px;">Over the same three-year window for which both metrics are available, opioid deaths and psychiatry payments grew at nearly identical rates. The longer-term escalation (182% from 2016 to 2023) predates available specialty-level spending data.</p>
+  <div class="chart-card">
+    <div class="chart-title">
+      <span class="material-symbols-outlined">account_balance</span>
+      Overdose Deaths vs. Psychiatry Spending by Province
+    </div>
+    <div class="chart-subtitle">Large provinces, 2016&ndash;2024. Psychiatry data available 2021&ndash;2023 only &bull; Sources: PHAC (2025); CIHI (2024)</div>
+    <canvas id="chartSpending" height="280"></canvas>
+  </div>
+  <div class="story-panel">
+    When measured over the same time window (2021&ndash;2023), opioid deaths and psychiatry payments grew at nearly identical rates&mdash;approximately <span class="hl">8% each</span>. The longer-term escalation in deaths (182% from 2016 to 2023) predates available specialty-level spending data, making direct trend comparison impossible. <strong>Critically, psychiatrist billing data is a poor proxy for addiction treatment spending.</strong> The majority of opioid agonist therapy (methadone, buprenorphine/Suboxone) is prescribed by family physicians and nurse practitioners, not psychiatrists. Community-based treatment, harm reduction services, supervised consumption sites, naloxone distribution, and addiction medicine programs are entirely absent from CIHI specialty payment data. The data presented here reflect psychiatrist clinical billing only&mdash;they do not and cannot measure the adequacy of Canada's addiction treatment response (CIHI, 2024).
+  </div>
+  <div class="footnote">Methodological note: CIHI physician payment data uses fiscal years (April&ndash;March) while PHAC overdose data uses calendar years (January&ndash;December). This temporal misalignment introduces approximately three months of offset in year-over-year comparisons. Psychiatry specialty payments available for 2021&ndash;2022, 2022&ndash;2023, and 2023&ndash;2024 fiscal years only.</div>
+</section>
+
+<!-- ===== SECTION 10: SPENDING PRIORITIES ===== -->
+<section class="section" id="s10">
+  <div class="section-label">Provincial Spending Priorities</div>
+  <h2>Where Psychiatry Sits Among Specialties</h2>
+  <div class="sl-boxes-icon">
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">paid</span></div>
+      <div class="box-value">$1.9B</div>
+      <div class="box-label">Psychiatry payments (2023)</div>
+      <div class="box-desc">4th highest specialty nationally</div>
+    </div>
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">monitoring</span></div>
+      <div class="box-value">5.5%</div>
+      <div class="box-label">Share of total payments</div>
+      <div class="box-desc">Psychiatry as % of all physician clinical payments</div>
+    </div>
+    <div class="box-item">
+      <div class="box-icon"><span class="material-symbols-outlined">groups</span></div>
+      <div class="box-value">$15.4B</div>
+      <div class="box-label">Family medicine (largest)</div>
+      <div class="box-desc">Family medicine accounts for the most physician spending</div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Specialty</th>
+          <th>Total Payments 2023 ($M)</th>
+          <th>% of Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Family medicine</td><td class="val">$15,408</td><td>44.6%</td></tr>
+        <tr><td>Internal medicine</td><td class="val">$6,164</td><td>17.8%</td></tr>
+        <tr><td>Anesthesia</td><td class="val">$2,021</td><td>5.8%</td></tr>
+        <tr style="background:#E0F0EE;"><td><strong>Psychiatry</strong></td><td class="val"><strong>$1,895</strong></td><td><strong>5.5%</strong></td></tr>
+        <tr><td>Pediatrics</td><td class="val">$1,395</td><td>4.0%</td></tr>
+        <tr><td>Ophthalmology</td><td class="val">$1,358</td><td>3.9%</td></tr>
+        <tr><td>General surgery</td><td class="val">$1,305</td><td>3.8%</td></tr>
+        <tr><td>Cardiology</td><td class="val">$1,271</td><td>3.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="story-panel">
+    Psychiatry ranks as the fourth-highest medical specialty by total clinical payments in Canada, at approximately <span class="hl">$1.9 billion in 2023</span>. This represents 5.5% of all physician payments. Family medicine dominates at $15.4 billion (44.6%), reflecting its role as the primary point of contact for most Canadians. The specialty spending breakdown illustrates that psychiatry, while substantial in absolute terms, represents a modest share of total physician expenditure. Importantly, many addiction and mental health services are delivered outside of psychiatrist billing&mdash;through family physicians, nurse practitioners, counselors, and community organizations&mdash;and are not captured in these figures (CIHI, 2024).
+  </div>
+</section>
+
+<!-- ===== SECTION 11: LIMITATIONS CALLOUT ===== -->
+<section class="section" id="s11">
+  <div class="section-label">Methods &amp; Limitations</div>
+  <h2>What the Data Cannot Tell Us</h2>
+  <div class="callout">
+    <div class="callout-title">
+      <span class="material-symbols-outlined">info</span>
+      Important limitations for interpreting this analysis
+    </div>
+    <div class="callout-body">
+      This article presents descriptive analysis of population-level surveillance data. It does not establish causal relationships between variables. All correlations&mdash;particularly between spending patterns and health outcomes&mdash;should be interpreted with caution.
+    </div>
+  </div>
+  <ul class="sl-bullets-description">
+    <li>
+      <div class="bd-title">Ecological fallacy</div>
+      <div class="bd-desc">Province-level comparisons cannot be used to draw conclusions about individual-level risk. A province with higher psychiatry spending may not direct that spending toward populations at highest overdose risk.</div>
+    </li>
+    <li>
+      <div class="bd-title">Temporal misalignment</div>
+      <div class="bd-desc">CIHI physician payment data uses fiscal years (April&ndash;March) while PHAC overdose surveillance uses calendar years (January&ndash;December). This introduces a three-month offset in comparisons.</div>
+    </li>
+    <li>
+      <div class="bd-title">Classification variation</div>
+      <div class="bd-desc">Provinces use different coroner and medical examiner systems with varying toxicological thresholds and classification practices. This affects cross-provincial comparisons of death rates (PHAC, 2025).</div>
+    </li>
+    <li>
+      <div class="bd-title">Reporting lag</div>
+      <div class="bd-desc">Recent data (particularly 2024 and 2025) is subject to revision as coroner investigations are completed. Apparent declines in the most recent periods may partly reflect incomplete reporting.</div>
+    </li>
+    <li>
+      <div class="bd-title">Unmeasured confounders</div>
+      <div class="bd-desc">Drug supply toxicity, naloxone distribution, safe consumption site availability, housing stability, and incarceration patterns are not captured in this dataset but are known to influence overdose outcomes.</div>
+    </li>
+    <li>
+      <div class="bd-title">Crude rates</div>
+      <div class="bd-desc">This analysis uses crude rates (deaths per 100,000 total population) rather than age-standardized rates. Given the concentration of deaths in the 20&ndash;49 age group, provinces with younger populations may appear to have higher rates independent of other risk factors.</div>
+    </li>
+    <li>
+      <div class="bd-title">Missing populations</div>
+      <div class="bd-desc">Indigenous-specific data is not reported in the PHAC national surveillance dataset used here, despite disproportionate harm documented in province-specific reports (British Columbia Coroners Service, 2024).</div>
+    </li>
+    <li>
+      <div class="bd-title">Spending ≠ service access</div>
+      <div class="bd-desc">Psychiatrist billing data reflects payments for services rendered, not the adequacy or accessibility of mental health care. Wait times, geographic distribution, and the scope of addiction-specific services are not captured.</div>
+    </li>
+  </ul>
+  <div class="methods-box">
+    <h3>Methodology</h3>
+    <p><strong>Data sources:</strong> PHAC Opioid- and Stimulant-Related Harms surveillance data (updated December 2025), covering January 2016 through June 2025. CIHI National Physician Database payments data for fiscal years 2021&ndash;2022 through 2023&ndash;2024.</p>
+    <p><strong>Analysis:</strong> Descriptive statistics computed from publicly available aggregate data. No individual-level records were accessed. Provincial comparisons use crude rates as reported by PHAC. Physician payments reported in constant current-year dollars (not inflation-adjusted).</p>
+    <p><strong>Data processing:</strong> Source data were ingested into a Databricks Unity Catalog environment following a Bronze (raw) &rarr; Silver (standardized) &rarr; Gold (star schema) medallion architecture. All transformations are documented and reproducible.</p>
+  </div>
+</section>
+
+<!-- ===== SECTION 12: LOOKING FORWARD ===== -->
+<section class="section" id="s12">
+  <div class="section-label">Looking Forward</div>
+  <div class="sl-quote-center">
+    <div class="quote-text">The data tell us where people are dying, and in what numbers. They do not yet tell us enough about what keeps people alive.</div>
+    <div class="quote-attr">&mdash; Reflection on the limitations of mortality surveillance</div>
+  </div>
+  <div style="max-width:360px; margin: 0 auto;">
+    <div class="sl-num-trend">
+      <div class="trend-value">2,787</div>
+      <div class="trend-label">Deaths in first half of 2025 (preliminary)</div>
+      <svg width="100%" height="28" viewBox="0 0 200 28" style="margin-top:8px;">
+        <polyline points="10,26 30,20 50,18 80,10 110,4 140,2 160,3 180,5 195,8" fill="none" stroke="#0FB9B1" stroke-width="2"/>
+      </svg>
+      <div style="font-size:11px; color:#4A5568; font-weight:300; margin-top:4px;">Preliminary and subject to upward revision. No trend conclusion can be drawn from incomplete data.</div>
+    </div>
+  </div>
+  <p style="margin-top:24px;">Preliminary 2025 data suggest a potential easing of the crisis, though it is too early to determine whether this reflects a durable trend or reporting artifacts. What the nine years of data examined here make clear is that the overdose crisis in Canada is not a uniform phenomenon&mdash;it varies profoundly by geography, by demography, and by substance.</p>
+  <h3 style="margin-top:24px;">Evidence-Based Responses: What the Data Does Not Show</h3>
+  <p>This analysis focuses on mortality surveillance and physician spending. It does not capture the evidence-based interventions that have been deployed across Canada in response to the crisis, including:</p>
+  <ul class="sl-bullets-icon" style="margin-bottom:16px;">
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">health_and_safety</span></div>
+      <div><strong>Naloxone distribution.</strong> Take-home naloxone programs have reversed hundreds of thousands of overdoses since their expansion. The number of kits distributed nationally has grown substantially, though comprehensive distribution data is not included in this analysis.</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">local_hospital</span></div>
+      <div><strong>Supervised consumption and overdose prevention sites.</strong> Facilities such as Vancouver's Insite have operated for two decades with zero on-site deaths. Over 40 sanctioned sites now operate across Canada, though coverage remains limited relative to need (Health Canada, 2024).</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">medication</span></div>
+      <div><strong>Opioid agonist treatment (OAT).</strong> Methadone and buprenorphine/Suboxone programs remain the most evidence-supported treatment for opioid use disorder. Access has expanded but remains unevenly distributed, particularly in rural and northern communities.</div>
+    </li>
+    <li>
+      <div class="bullet-icon"><span class="material-symbols-outlined">science</span></div>
+      <div><strong>Safe supply and drug checking.</strong> Prescribed safe supply programs and community drug checking services represent emerging interventions aimed at reducing exposure to the toxic unregulated supply.</div>
+    </li>
+  </ul>
+  <p>Effective responses will need to be as differentiated as the crisis itself. The data presented here can inform where and for whom interventions are most urgently needed&mdash;but the effectiveness of those interventions requires its own body of evidence.</p>
+</section>
+
+<!-- ===== REFERENCES ===== -->
+<section class="ref-section" id="references">
+  <h2>References</h2>
+  <ul class="ref-list">
+    <li>British Columbia Coroners Service. (2024). <em>Illicit drug toxicity deaths in BC: January 1, 2012 &ndash; December 31, 2024</em>. Ministry of Public Safety and Solicitor General. <a href="https://www2.gov.bc.ca/gov/content/life-events/death/coroners-service/statistical-reports" target="_blank">https://www2.gov.bc.ca/gov/content/life-events/death/coroners-service/statistical-reports</a></li>
+    <li>Canadian Centre on Substance Use and Addiction. (2023). <em>Changing circumstances surrounding opioid-related deaths in Canada during the COVID-19 pandemic</em>. CCSA. <a href="https://www.ccsa.ca/" target="_blank">https://www.ccsa.ca/</a></li>
+    <li>Canadian Institute for Health Information. (2024). <em>National Physician Database &mdash; payments data, 2023&ndash;2024</em> [Data set]. CIHI. <a href="https://www.cihi.ca/en/national-physician-database-metadata" target="_blank">https://www.cihi.ca/en/national-physician-database-metadata</a></li>
+    <li>Canadian Institute for Health Information. (2024). <em>National Physician Database data release, 2023&ndash;2024: Methodology notes</em>. CIHI. <a href="https://www.cihi.ca/sites/default/files/document/national-physician-database-data-release-2023-2024-meth-notes-en.pdf" target="_blank">https://www.cihi.ca/sites/default/files/document/national-physician-database-data-release-2023-2024-meth-notes-en.pdf</a></li>
+    <li>Institut national de sant&eacute; publique du Qu&eacute;bec. (2023). <em>Portrait des d&eacute;c&egrave;s li&eacute;s aux intoxications par opio&iuml;des au Qu&eacute;bec</em>. INSPQ. <a href="https://www.inspq.qc.ca/" target="_blank">https://www.inspq.qc.ca/</a></li>
+    <li>Public Health Agency of Canada. (2025). <em>Opioid- and stimulant-related harms in Canada</em> [Data set]. Government of Canada. <a href="https://health-infobase.canada.ca/substance-related-harms/opioids-stimulants/" target="_blank">https://health-infobase.canada.ca/substance-related-harms/opioids-stimulants/</a></li>
+    <li>Public Health Agency of Canada. (2025). <em>Opioid- and stimulant-related harms in Canada: Technical notes</em>. Government of Canada. <a href="https://health-infobase.canada.ca/substance-related-harms/opioids-stimulants/technical-notes.html" target="_blank">https://health-infobase.canada.ca/substance-related-harms/opioids-stimulants/technical-notes.html</a></li>
+    <li>First Nations Health Authority &amp; British Columbia Coroners Service. (2024). <em>Illicit drug toxicity deaths among First Nations people in BC</em>. FNHA. <a href="https://www.fnha.ca/what-we-do/mental-wellness-and-substance-use/overdose-data-and-first-nations-in-bc" target="_blank">https://www.fnha.ca/what-we-do/mental-wellness-and-substance-use/overdose-data-and-first-nations-in-bc</a></li>
+    <li>Health Canada. (2024). <em>Supervised consumption sites: Status of applications</em>. Government of Canada. <a href="https://www.canada.ca/en/health-canada/services/substance-use/supervised-consumption-sites/status-application.html" target="_blank">https://www.canada.ca/en/health-canada/services/substance-use/supervised-consumption-sites/status-application.html</a></li>
+  </ul>
+</section>
+
+</div><!-- /article-wrap -->
+
+<!-- ===== CHART.JS SCRIPTS ===== -->
+<script>
+Chart.register(ChartDataLabels);
+
+// Global font
+Chart.defaults.font.family = 'Lato';
+
+// Shared config
+const COLORS = {
+  slate: '#1E3A5F',
+  teal: '#0FB9B1',
+  ocean: '#2C5282',
+  aqua: '#4FD1C5',
+  navy: '#0B1F33',
+  deepTeal: '#0E8C86',
+  mist: '#EDF5F4',
+  paleAqua: '#E0F0EE'
+};
+const fontFamily = "'Lato', sans-serif";
+
+const sharedLegend = {
+  position: 'top',
+  align: 'end',
+  onClick: function() {},
+  labels: { boxWidth: 8, boxHeight: 8, color: '#0B1F33', padding: 14, usePointStyle: true, pointStyle: 'rect', font: { size: 11 } }
+};
+const lineLegend = { ...sharedLegend, labels: { ...sharedLegend.labels, pointStyle: 'circle' } };
+
+const axisClean = { grid: { display: false }, border: { display: false } };
+const noGrid = { display: false };
+
+const sharedScales = (yTitle) => ({
+  x: { ...axisClean, ticks: { font: { size: 11, weight: '400' }, color: '#0B1F33' } },
+  y: { ...axisClean, ticks: { font: { size: 11, weight: '300' }, color: '#4A5568' }, title: yTitle ? { display: true, text: yTitle, font: { size: 11 } } : undefined }
+});
+
+// ===== CHART 1: Trajectory =====
+new Chart(document.getElementById('chartTrajectory'), {
+  type: 'line',
+  data: {
+    labels: ['2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+    datasets: [{
+      label: 'Deaths',
+      data: [2832, 3928, 4245, 3534, 6061, 7425, 7210, 7997, 7289],
+      borderColor: COLORS.slate,
+      backgroundColor: COLORS.slate + '20',
+      fill: true,
+      tension: 0.35,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBackgroundColor: COLORS.slate,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      yAxisID: 'y'
+    }, {
+      label: 'Rate per 100K',
+      data: [7.8, 10.7, 11.5, 9.4, 15.9, 19.4, 18.5, 20.0, 17.7],
+      borderColor: COLORS.teal,
+      backgroundColor: COLORS.teal + '15',
+      fill: true,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBackgroundColor: COLORS.teal,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35,
+      yAxisID: 'y1'
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: lineLegend,
+      datalabels: { display: false }
+    },
+    scales: {
+      x: { ...axisClean, ticks: { font: { size: 11, weight: '400' }, color: '#0B1F33' } },
+      y: { ...axisClean, position: 'left', title: { display: true, text: 'Deaths', font: { size: 11 } }, ticks: { font: { size: 11, weight: '300' }, color: '#4A5568' } },
+      y1: { ...axisClean, position: 'right', title: { display: true, text: 'Rate per 100K', font: { size: 11 } }, ticks: { font: { size: 11, weight: '300' }, color: '#4A5568' } }
+    }
+  }
+});
+
+// ===== CHART 2: Fentanyl =====
+new Chart(document.getElementById('chartFentanyl'), {
+  type: 'bar',
+  data: {
+    labels: ['2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+    datasets: [{
+      label: 'Fentanyl involvement (%)',
+      data: [52, 69, 71, 62, 81, 86, 82, 82, 74],
+      backgroundColor: COLORS.slate
+    }, {
+      label: 'Non-fentanyl opioid involvement (%)',
+      data: [59, 39, 46, 44, 30, 25, 26, 24, 26],
+      backgroundColor: COLORS.teal
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: sharedLegend,
+      datalabels: {
+        color: '#FFF',
+        font: { weight: 700, family: fontFamily, size: 11 },
+        display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 15; }
+      }
+    },
+    scales: {
+      ...sharedScales('% of opioid deaths'),
+      x: { grid: noGrid, stacked: false, ticks: { font: { family: fontFamily, size: 11 } } },
+      y: { grid: noGrid, stacked: false, max: 100, title: { display: true, text: '% of opioid deaths', font: { family: fontFamily, size: 11 } }, ticks: { font: { family: fontFamily, size: 11 } } }
+    }
+  }
+});
+
+// ===== CHART 3: Demographics =====
+new Chart(document.getElementById('chartDemographic'), {
+  type: 'bar',
+  data: {
+    labels: ['0-19', '20-29', '30-39', '40-49', '50-59', '60+'],
+    datasets: [{
+      label: 'Male',
+      data: [79, 785, 1613, 1412, 1142, 653],
+      backgroundColor: COLORS.slate
+    }, {
+      label: 'Female',
+      data: [72, 452, 674, 490, 357, 206],
+      backgroundColor: COLORS.teal
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: {
+      legend: sharedLegend,
+      datalabels: {
+        color: '#FFF',
+        font: { weight: 700, family: fontFamily, size: 10 },
+        display: function(ctx) { return ctx.dataset.data[ctx.dataIndex] > 100; }
+      }
+    },
+    scales: {
+      x: { grid: noGrid, title: { display: true, text: 'Deaths', font: { family: fontFamily, size: 11 } }, ticks: { font: { family: fontFamily, size: 11 } } },
+      y: { grid: noGrid, ticks: { font: { family: fontFamily, size: 11 } } }
+    }
+  }
+});
+
+// ===== CHART 4: Provincial Rates =====
+new Chart(document.getElementById('chartProvincial'), {
+  type: 'line',
+  data: {
+    labels: ['2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+    datasets: [{
+      label: 'British Columbia',
+      data: [16.6, 27.2, 28.6, 17.0, 29.0, 36.7, 38.0, 40.2, 41.6],
+      borderColor: COLORS.slate,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35
+    }, {
+      label: 'Alberta',
+      data: [14.3, 17.6, 18.8, 14.4, 27.0, 37.1, 33.7, 39.8, 24.3],
+      borderColor: COLORS.teal,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35
+    }, {
+      label: 'Saskatchewan',
+      data: [6.2, 8.3, 9.9, 9.9, 17.4, 22.2, 22.2, 28.8, 23.7],
+      borderColor: COLORS.ocean,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35
+    }, {
+      label: 'Ontario',
+      data: [5.1, 7.1, 7.7, 7.1, 12.3, 13.2, 12.4, 16.9, 13.3],
+      borderColor: COLORS.navy,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35
+    }, {
+      label: 'Quebec',
+      data: [2.2, 2.4, 2.9, 2.3, 3.9, 4.3, 3.7, 3.5, 7.1],
+      borderColor: COLORS.deepTeal,
+      borderWidth: 1.5,
+      pointRadius: 2.5,
+      pointBorderColor: '#fff',
+      pointBorderWidth: 1,
+      tension: 0.35
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: lineLegend,
+      datalabels: { display: false }
+    },
+    scales: {
+      x: { ...axisClean, ticks: { font: { size: 11, weight: '400' }, color: '#0B1F33' } },
+      y: { ...axisClean, title: { display: true, text: 'Deaths per 100,000', font: { size: 11 } }, ticks: { font: { size: 11, weight: '300' }, color: '#4A5568' } }
+    }
+  }
+});
+
+// ===== CHART 5: Health System =====
+(function(){
+  // Q7 data — extract from JSON
+  const deathsData = [2832, 3928, 4245, 3534, 6061, 7425, 7210, 7997, 7289];
+  const labels = ['2016','2017','2018','2019','2020','2021','2022','2023','2024'];
+  new Chart(document.getElementById('chartSystem'), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deaths',
+        data: deathsData,
+        borderColor: COLORS.slate,
+        pointRadius: 3,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: sharedLegend,
+        datalabels: { display: false }
+      },
+      scales: {
+        x: { grid: noGrid, ticks: { font: { family: fontFamily, size: 11 } } },
+        y: { grid: noGrid, title: { display: true, text: 'Count', font: { family: fontFamily, size: 11 } }, ticks: { font: { family: fontFamily, size: 11 } } }
+      }
+    }
+  });
+})();
+
+// ===== CHART 6: Stimulant Deaths =====
+new Chart(document.getElementById('chartStimulant'), {
+  type: 'bar',
+  data: {
+    labels: ['2018','2019','2020','2021','2022','2023','2024'],
+    datasets: [{
+      label: 'Stimulant-related deaths',
+      data: [2357, 2122, 3637, 4462, 4548, 5326, 4637],
+      backgroundColor: COLORS.slate,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: sharedLegend,
+      datalabels: {
+        color: '#FFF',
+        font: { weight: 700, family: fontFamily, size: 11 },
+        anchor: 'center'
+      }
+    },
+    scales: sharedScales('Deaths')
+  }
+});
+
+// ===== CHART 7: Spending vs Deaths =====
+(function(){
+  const labels = ['2016','2017','2018','2019','2020','2021','2022','2023','2024'];
+  // Alberta deaths
+  const abDeaths = [602, 744, 805, 626, 1192, 1642, 1523, 1868, 1193];
+  const bcDeaths = [807, 1300, 1384, 835, 1440, 1843, 2054, 2215, 2344];
+  const onDeaths = [734, 1053, 1114, 1013, 1767, 1887, 1812, 2641, 2078];
+  // Psychiatry payments (thousands) - only 2021-2023
+  const abPsych = [null, null, null, null, null, 249406, 253684, 275725, null];
+  const bcPsych = [null, null, null, null, null, 249339, 257543, 291657, null];
+  const onPsych = [null, null, null, null, null, 563118, 584505, 619839, null];
+
+  new Chart(document.getElementById('chartSpending'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'AB Deaths',
+        type: 'line',
+        data: abDeaths,
+        borderColor: COLORS.slate,
+        pointRadius: 3,
+        tension: 0.3,
+        yAxisID: 'y'
+      }, {
+        label: 'BC Deaths',
+        type: 'line',
+        data: bcDeaths,
+        borderColor: COLORS.teal,
+        pointRadius: 3,
+        tension: 0.3,
+        yAxisID: 'y'
+      }, {
+        label: 'ON Deaths',
+        type: 'line',
+        data: onDeaths,
+        borderColor: COLORS.ocean,
+        pointRadius: 3,
+        tension: 0.3,
+        yAxisID: 'y'
+      }, {
+        label: 'AB Psych $K',
+        data: abPsych,
+        backgroundColor: COLORS.slate + '40',
+        borderRadius: 4,
+        yAxisID: 'y1'
+      }, {
+        label: 'BC Psych $K',
+        data: bcPsych,
+        backgroundColor: COLORS.teal + '40',
+        borderRadius: 4,
+        yAxisID: 'y1'
+      }, {
+        label: 'ON Psych $K',
+        data: onPsych,
+        backgroundColor: COLORS.ocean + '40',
+        borderRadius: 4,
+        yAxisID: 'y1'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: sharedLegend,
+        datalabels: { display: false }
+      },
+      scales: {
+        x: { grid: noGrid, ticks: { font: { family: fontFamily, size: 10 } } },
+        y: { grid: noGrid, position: 'left', title: { display: true, text: 'Deaths', font: { family: fontFamily, size: 11 } }, ticks: { font: { family: fontFamily, size: 11 } } },
+        y1: { grid: noGrid, position: 'right', title: { display: true, text: 'Psych Payments ($K)', font: { family: fontFamily, size: 11 } }, ticks: { font: { family: fontFamily, size: 11 } } }
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
